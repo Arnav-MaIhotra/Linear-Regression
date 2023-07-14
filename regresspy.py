@@ -23,6 +23,9 @@ class LinearRegression:
     self.params = np.zeros(self.num_features)
     self.bias = 0
 
+    if Y.size != self.num_samples:
+        raise ValueError("Number of samples in X and Y do not match.")
+
     iters = 0
 
     prev_cost = float('inf')

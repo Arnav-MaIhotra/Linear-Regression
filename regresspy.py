@@ -2,7 +2,7 @@ import numpy as np
 
 class LinearRegression:
 
-  def __init__(self, learning_rate = 0.01, max_iters = 10000, tolerance = 1e-15):
+  def __init__(self, learning_rate = 0.01, max_iters = 100000, tolerance = 1e-10):
     self.learning_rate = learning_rate
     self.max_iters = max_iters
     self.tolerance = tolerance
@@ -13,7 +13,7 @@ class LinearRegression:
         return np.dot(X, self.params) + self.bias
 
   def j(self, X, y):
-      se = np.sum((self.h(X) - y) ** 2)
+      se = np.mean((self.h(X) - y) ** 2)/2
       return se
 
   def fit(self, X, Y, progress=False):
@@ -22,6 +22,8 @@ class LinearRegression:
 
     self.params = np.zeros(self.num_features)
     self.bias = 0
+
+    iters = 0
 
     prev_cost = float('inf')
 
@@ -39,7 +41,7 @@ class LinearRegression:
       self.params -= self.learning_rate * grad_coef
       self.bias -= self.learning_rate * grad_inte
 
-      current_cost = np.mean((np.dot(X, self.params) + self.bias - Y) ** 2)
+      current_cost = self.j(X, Y)
 
       if abs(current_cost - prev_cost) < self.tolerance:
           break
@@ -48,6 +50,10 @@ class LinearRegression:
 
       if progress:
           print("Squared error: ", self.j(X, Y))
+          iters += 1
+
+    if progress:
+       print("Iterations: ", iters)
 
   def predict(self, x):
     return np.dot(x, self.params) + self.bias
